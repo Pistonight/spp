@@ -1,0 +1,9 @@
+[package]
+name = "spp"
+version = "0.1.0"
+edition = "2021"
+description = "Simple progress printer"
+license = "MIT"
+
+[dependencies]
+terminal_size = "0.4.1"
