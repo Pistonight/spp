@@ -18,6 +18,7 @@ fn my_func() {
 
         // do your work...
     }
+    progress.done()
 }
 
 fn my_func2() {
@@ -25,17 +26,16 @@ fn my_func2() {
     for i in 0..10 {
         progress.update(i)
     }
-    // re-assign will drop the first one
+    progress.done();
     let progress = spp::printer(20, "Two");
     for i in 0..20 {
         progress.update(i)
     }
-    // manually dropping to finish
-    drop(progress);
+    progress.done();
 
     let progress2 = spp::printer(20, "Three");
     for i in 0..20 {
         progress2.update(i)
     }
-    // automatically dropped
+    progress2.done();
 }

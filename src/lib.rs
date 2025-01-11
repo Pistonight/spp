@@ -108,27 +108,31 @@ impl Printer {
             s
         };
         let prefix_len = prefix.len();
-        let prefix = if prefix_len > self.term_width {
+        let prefix = if self.term_width > 0 && prefix_len + 1 > self.term_width {
+            // prefix_len is always non-zero here
+            // since term_width > 0, the index is always valid
             &prefix[prefix_len - self.term_width + 1..]
         } else {
             &prefix
         };
-        let remaining = self.term_width - prefix_len - 1;
         let text = text.to_string();
-        let text_len = text.len();
-        let text = if text_len > remaining {
-            let start = text_len - remaining;
-            &text[start..]
+        let text = if self.term_width > 0 {
+            let remaining = (self.term_width - 1).saturating_sub(prefix_len);
+            let text_len = text.len();
+            if remaining > 0 && text_len > remaining {
+                let start = text_len - remaining;
+                &text[start..]
+            } else {
+                &text
+            }
         } else {
             &text
         };
         eprint!("\r{}{}\u{1b}[0K", prefix, text);
         let _ = std::io::stderr().flush();
     }
-}
 
-impl Drop for Printer {
-    fn drop(&mut self) {
+    pub fn done(&self) {
         if self.total == 0 {
             println!("\u{1b}[1K\r{}", self.prefix);
         } else {

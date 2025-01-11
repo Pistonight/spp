@@ -40,6 +40,8 @@ fn my_func() {
 
         // do your work...
     }
+    // Print the final message and start a new line
+    progress.done()
 }
 
 ```
@@ -52,36 +54,11 @@ progress.set_throttle_duration(std::time::Duration::from_millis(200));
 ```
 
 ## Finishing
-The progress is considered done when the printer is dropped.
-Upon dropping, it will print the final message showing current = total steps,
-and prints a newline.
+Calling `progress.done()` will print the final message
+with the current step equal to the total step, like
+```
+[500/500] Doing Something
+```
 
-You can manually drop it or assign it if there are multiple progresses
-needed in the same scope
-```rust
-fn my_func() {
-    let progress = spp::printer(10, "One");
-    for i in 0..10 {
-        progress.update(i)
-    }
-    // re-assign will drop the first one
-    let progress = spp::printer(20, "Two");
-    for i in 0..20 {
-        progress.update(i)
-    }
-    // manually dropping to finish
-    drop(progress);
-
-    let progress2 = spp::printer(20, "Three");
-    for i in 0..20 {
-        progress2.update(i)
-    }
-    // automatically dropped
-}
-```
-This will leave these in the console after finishing:
-```
-[10/10] One
-[20/20] Two
-[20/20] Three
-```
+You usually want this, but you can also intentionally omit this,
+so the next progress reuses the same line.
