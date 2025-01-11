@@ -1,6 +1,6 @@
 name: Rust
 on:
-  pull-request:
+  pull-requests:
     branches:
       - main
   push:
