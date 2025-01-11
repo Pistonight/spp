@@ -1,0 +1,28 @@
+version: '3'
+
+includes:
+  cargo:
+    taskfile: ./mono-dev/task/cargo.yaml
+    optional: true
+    internal: true
+
+tasks:
+  install:
+    cmds:
+      - rm -rf mono-dev
+      - git clone https://github.com/Pistonight/mono-dev --depth 1
+    
+  test:
+    desc: Run example test
+    cmds:
+      - cargo run --example test --release
+
+  check:
+    desc: Check code
+    cmds:
+      - task: cargo:clippy-all
+      - task: cargo:fmt-check
+  
+  fix:
+    desc: Fix code
+    deps: [cargo:fmt-fix]
